@@ -192,7 +192,7 @@
   /* ── TABLE ── */
   .table-wrap {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
+    border-radius: var(--radius); overflow-x: auto; overflow-y: hidden;
     box-shadow: var(--shadow); margin-bottom: 32px;
     transition: background 0.3s, border-color 0.3s;
   }
@@ -292,15 +292,29 @@
     .section-header { flex-wrap: wrap; gap: 8px; }
     .section-rent { margin-left: 0; }
   }
+  /* Tab pills inside mobile-nav */
+  .mobile-nav-tab {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--accent);
+    background: none; cursor: pointer; font-family: inherit;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .mobile-nav-tab.active { background: var(--accent); color: #fff; }
+  .mobile-nav-divider {
+    width: 1px; height: 20px; background: var(--border);
+    flex-shrink: 0; align-self: center;
+  }
+
   @media (max-width: 540px) {
     .sidebar { display: none; }
+    .tabs-bar { display: none; }
     .mobile-nav { display: flex; }
     .main { padding: 12px; }
     header { padding: 0 12px; }
     .header-subtitle { display: none; }
     .search-input { width: 110px; font-size: 13px; }
-    .tabs-bar { padding: 0 12px; }
-    .tab-btn { padding: 12px 16px; font-size: 14px; }
     .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
     .stat-card { padding: 12px 14px; }
     .stat-value { font-size: 22px; }
@@ -308,6 +322,7 @@
     td, th { padding: 9px 10px; font-size: 13px; }
     .serial-code { font-size: 11px; }
     .layout { min-height: unset; }
+    .table-wrap { border-radius: 8px; }
   }
   @media (max-width: 380px) {
     .header-title { font-size: 14px; }
@@ -342,10 +357,7 @@
   <button class="tab-btn" data-tab="pty">🌊 SFL PTY</button>
 </div>
 
-<!-- Mobile Section Nav BKK -->
-<div class="mobile-nav" id="mobile-nav-bkk"></div>
-<!-- Mobile Section Nav PTY -->
-<div class="mobile-nav" id="mobile-nav-pty" style="display:none"></div>
+<div class="mobile-nav" id="mobile-nav"></div>
 
 <div class="layout">
   <!-- Sidebar BKK -->
@@ -391,19 +403,39 @@ function buildSidebar(tabKey, sections) {
   const label = sb.querySelector('.sidebar-label');
   sb.innerHTML = '';
   sb.appendChild(label);
-  const mn = document.getElementById(`mobile-nav-${tabKey}`);
-  mn.innerHTML = '';
   sections.forEach((sec, i) => {
     const total = sec.items.length;
     const inC = sec.items.filter(x => x.status === 'IN').length;
-    // Sidebar btn
     const btn = document.createElement('button');
     btn.className = 'sidebar-btn' + (i === 0 ? ' active' : '');
     btn.dataset.section = sec.name;
     btn.innerHTML = `<span>${sec.name}</span><span class="sidebar-count">${inC}/${total}</span>`;
     btn.onclick = () => showSection(tabKey, sec.name);
     sb.appendChild(btn);
-    // Mobile nav btn
+  });
+}
+
+function buildMobileNav(tabKey, sections) {
+  const mn = document.getElementById('mobile-nav');
+  mn.innerHTML = '';
+  // Tab pills
+  Object.entries(tabMap).forEach(([key, label]) => {
+    const icons = { bkk: '🏙️', pty: '🌊' };
+    const tbtn = document.createElement('button');
+    tbtn.className = 'mobile-nav-tab' + (key === tabKey ? ' active' : '');
+    tbtn.dataset.tab = key;
+    tbtn.textContent = icons[key] + ' ' + key.toUpperCase();
+    tbtn.onclick = () => switchTab(key);
+    mn.appendChild(tbtn);
+  });
+  // Divider
+  const div = document.createElement('span');
+  div.className = 'mobile-nav-divider';
+  mn.appendChild(div);
+  // Section pills
+  sections.forEach((sec, i) => {
+    const total = sec.items.length;
+    const inC = sec.items.filter(x => x.status === 'IN').length;
     const mbtn = document.createElement('button');
     mbtn.className = 'mobile-nav-btn' + (i === 0 ? ' active' : '');
     mbtn.dataset.section = sec.name;
@@ -500,8 +532,8 @@ function showSection(tabKey, secName) {
   document.querySelectorAll(`#sidebar-${tabKey} .sidebar-btn`).forEach(b => {
     b.classList.toggle('active', b.dataset.section === secName);
   });
-  // Update mobile-nav
-  document.querySelectorAll(`#mobile-nav-${tabKey} .mobile-nav-btn`).forEach(b => {
+  // Update mobile-nav section pills
+  document.querySelectorAll('#mobile-nav .mobile-nav-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.section === secName);
   });
   // Update panels
@@ -509,7 +541,7 @@ function showSection(tabKey, secName) {
     p.classList.toggle('active', p.id === `${tabKey}-${secName}`);
   });
   // Scroll active btn into view on mobile
-  const activeBtn = document.querySelector(`#mobile-nav-${tabKey} .mobile-nav-btn.active`);
+  const activeBtn = document.querySelector('#mobile-nav .mobile-nav-btn.active');
   if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
@@ -519,7 +551,9 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
   document.querySelectorAll('.sidebar').forEach(s => s.style.display = 'none');
   document.getElementById(`sidebar-${tab}`).style.display = 'block';
-
+  buildMobileNav(tab, DATA[tabMap[tab]]);
+  currentSection[tab] = DATA[tabMap[tab]][0].name;
+  showSection(tab, currentSection[tab]);
 }
 
 // ── BUILD ALL ──
@@ -529,6 +563,8 @@ Object.entries(tabMap).forEach(([key, sheet]) => {
   buildPanel(key, sections);
   currentSection[key] = sections[0].name;
 });
+// Build initial mobile nav for bkk
+buildMobileNav('bkk', DATA[tabMap['bkk']]);
 
 // ── TAB CLICKS ──
 document.querySelectorAll('.tab-btn').forEach(b => {
