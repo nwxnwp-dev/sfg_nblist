@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สรุปการใช้เครื่องคอมพิวเตอร์ของ SFL</title>
+<title>สรุปการใช้เครื่องคอมพิวเตอร์ทั้งหมด</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <style>
@@ -426,8 +426,8 @@
     </button>
     <div class="logo-icon">💻</div>
     <div>
-      <div class="header-title">สรุปการใช้เครื่องคอมพิวเตอร์</div>
-      <div class="header-subtitle">SFL — Bangkok, Pattaya & PMCG</div>
+      <div class="header-title">สรุปการใช้เครื่องคอมพิวเตอร์ทั้งหมด</div>
+      <div class="header-subtitle">BY IT SEE FAH GROUP</div>
     </div>
   </div>
   <div class="header-right">
@@ -446,6 +446,12 @@
   <button class="tab-btn active" data-tab="bkk">🏙️ SFL BKK</button>
   <button class="tab-btn" data-tab="pty">🌊 SFL PTY</button>
   <button class="tab-btn" data-tab="pmcg">📁 PMCG</button>
+  <button class="tab-btn" data-tab="sfr">🍽️ SFR</button>
+  <button class="tab-btn" data-tab="sct">🥢 SCT</button>
+  <button class="tab-btn" data-tab="sff">🍱 SFF</button>
+  <button class="tab-btn" data-tab="osh">🍣 OSH</button>
+  <button class="tab-btn" data-tab="bak">🥐 BAK</button>
+  <button class="tab-btn" data-tab="duo">🥩 DUO</button>
 </div>
 
 <div class="mobile-nav" id="mobile-nav"></div>
@@ -463,11 +469,41 @@
   <nav class="sidebar" id="sidebar-pmcg" style="display:none">
     <div class="sidebar-label">PMCG</div>
   </nav>
+  <!-- Sidebar SFR -->
+  <nav class="sidebar" id="sidebar-sfr" style="display:none">
+    <div class="sidebar-label">SFR</div>
+  </nav>
+  <!-- Sidebar SCT -->
+  <nav class="sidebar" id="sidebar-sct" style="display:none">
+    <div class="sidebar-label">SCT</div>
+  </nav>
+  <!-- Sidebar SFF -->
+  <nav class="sidebar" id="sidebar-sff" style="display:none">
+    <div class="sidebar-label">SFF</div>
+  </nav>
+  <!-- Sidebar OSH -->
+  <nav class="sidebar" id="sidebar-osh" style="display:none">
+    <div class="sidebar-label">OSH</div>
+  </nav>
+  <!-- Sidebar BAK -->
+  <nav class="sidebar" id="sidebar-bak" style="display:none">
+    <div class="sidebar-label">BAK</div>
+  </nav>
+  <!-- Sidebar DUO -->
+  <nav class="sidebar" id="sidebar-duo" style="display:none">
+    <div class="sidebar-label">DUO</div>
+  </nav>
 
   <div class="main">
     <div class="tab-panel active" id="panel-bkk"></div>
     <div class="tab-panel" id="panel-pty"></div>
     <div class="tab-panel" id="panel-pmcg"></div>
+    <div class="tab-panel" id="panel-sfr"></div>
+    <div class="tab-panel" id="panel-sct"></div>
+    <div class="tab-panel" id="panel-sff"></div>
+    <div class="tab-panel" id="panel-osh"></div>
+    <div class="tab-panel" id="panel-bak"></div>
+    <div class="tab-panel" id="panel-duo"></div>
   </div>
 </div>
 
@@ -492,8 +528,8 @@ function excelDateToStr(val) {
 // ── CONFIG ──
 const FLOW_URL = "https://defaultf7533d4f423a4a0e9c12b86f37e739.7a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1398f2dba1bb414692dd3d57ea09865b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=H6-Py6pn-MExAhqjSVUtNk1Se2_TizxNnQ-u4emid7U";
 
-const tabMap = { bkk: 'SFL BKK', pty: 'SFL PTY', pmcg: 'PMCG' };
-const tabIcons = { bkk: '🏙️', pty: '🌊', pmcg: '📁' };
+const tabMap = { bkk: 'SFL BKK', pty: 'SFL PTY', pmcg: 'PMCG', sfr: 'SFR', sct: 'SCT', sff: 'SFF', osh: 'OSH', bak: 'BAK', duo: 'DUO' };
+const tabIcons = { bkk: '🏙️', pty: '🌊', pmcg: '📁', sfr: '🍽️', sct: '🥢', sff: '🍱', osh: '🍣', bak: '🥐', duo: '🥩' };
 let DATA = {};
 let currentTab = 'bkk';
 let currentSection = {};
@@ -514,27 +550,56 @@ async function loadExcelData() {
         const sections = [];
         let activeSection = null;
 
+        // Detect if sheet uses section-header rows (col0 has text, rest empty)
+        // or flat rows where section is inferred from display-name prefix (col6)
+        let hasSectionHeaders = false;
+        for (let i = 2; i < Math.min(rows.length, 30); i++) {
+          const r = rows[i];
+          if (r && r[0] && r.slice(1).every(cell => !cell)) { hasSectionHeaders = true; break; }
+        }
+
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
           if (!row || row.length === 0) continue;
-          const isSectionHeader = row[0] && row.slice(1).every(cell => !cell);
-          if (isSectionHeader) {
-            activeSection = { name: String(row[0]), items: [] };
-            sections.push(activeSection);
-          } else if (activeSection) {
-            activeSection.items.push({
-              status:   String(row[0] || 'IN').trim(),
-              Model:    row[1] || '—',
-              Serial:   row[2] || '—',
-              Position: row[3] || '—',
-              Nickname: row[4] || '—',
-              Fullname: row[5] || '—',
-              Email:    row[6] || '',
-              Start:    excelDateToStr(row[7]),
-              End:      excelDateToStr(row[8]),
-              Rent:     row[9] != null ? String(row[9]).replace(/,/g, '') : ''
-            });
+          // Skip header row
+          if (row[1] && String(row[1]).includes('STATUS')) continue;
+
+          if (hasSectionHeaders) {
+            const isSectionHeader = row[0] && row.slice(1).every(cell => !cell);
+            if (isSectionHeader) {
+              activeSection = { name: String(row[0]), items: [] };
+              sections.push(activeSection);
+              continue;
+            }
+            if (!activeSection) continue;
+          } else {
+            // Infer section from display-name prefix col[6] e.g. "SFL SLHQ : ..."
+            if (row[1] == null && row[2] == null && row[3] == null) continue; // blank row
+            const dispName = String(row[6] || '');
+            const secMatch = dispName.match(/^([^:]+)\s*:/);
+            const secName = secMatch ? secMatch[1].trim() : sheetName;
+            if (!activeSection || activeSection.name !== secName) {
+              activeSection = sections.find(s => s.name === secName);
+              if (!activeSection) {
+                activeSection = { name: secName, items: [] };
+                sections.push(activeSection);
+              }
+            }
           }
+
+          activeSection.items.push({
+            status:   String(row[1] || 'IN').trim(),
+            Model:    row[2] || '—',
+            Serial:   row[3] || '—',
+            Position: row[4] || '—',
+            Nickname: row[5] || '—',
+            Fullname: row[6] || '—',
+            Email:    row[10] || '',
+            Phone:    row[9] || '',
+            Start:    excelDateToStr(row[11]),
+            End:      excelDateToStr(row[12]),
+            Rent:     row[13] != null ? String(row[13]).replace(/,/g, '') : ''
+          });
         }
         freshData[sheetName] = sections;
       } else {
@@ -645,6 +710,7 @@ function buildPanel(tabKey, sections) {
             <th>ชื่อเล่น</th>
             <th>ชื่อ - นามสกุล</th>
             <th>อีเมล</th>
+            <th>เบอร์โทร</th>
             <th>วันเริ่ม</th>
             <th>วันสิ้นสุด</th>
             <th>ค่าเช่า (บาท)</th>
@@ -674,10 +740,11 @@ function renderRows(tabKey, sec, filter = '') {
     const badge = item.status === 'IN'
       ? `<span class="badge badge-in">IN</span>`
       : `<span class="badge badge-ex">EX</span>`;
-    const rent = item.Rent ? `${parseFloat(item.Rent).toLocaleString('th-TH')} ฿` : `<span style="color:var(--text-muted)">—</span>`;
+    const rent = item.Rent ? `${parseFloat(item.Rent).toLocaleString('th-TH')} ` : `<span style="color:var(--text-muted)">—</span>`;
     const serial = item.Serial && item.Serial !== '—' ? `<span class="serial-code">${item.Serial}</span>` : '';
     const modelCell = `<div class="model-cell">${item.Model || '—'}</div>${serial ? `<div style="margin-top:4px">${serial}</div>` : ''}`;
     const emailCell = item.Email ? `<a href="mailto:${item.Email}" style="color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap">${item.Email}</a>` : `<span style="color:var(--text-muted)">—</span>`;
+    const phoneCell = item.Phone ? `<a href="tel:${item.Phone}" style="color:var(--accent2);font-size:13px;text-decoration:none;white-space:nowrap">📞 ${item.Phone}</a>` : `<span style="color:var(--text-muted)">—</span>`;
     return `<tr>
       <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
       <td class="nowrap">${badge}</td>
@@ -686,12 +753,13 @@ function renderRows(tabKey, sec, filter = '') {
       <td class="name-cell nowrap">${item.Nickname || '—'}</td>
       <td style="font-size:13px">${item.Fullname || '—'}</td>
       <td>${emailCell}</td>
+      <td>${phoneCell}</td>
       <td class="date-cell">${item.Start || '—'}</td>
       <td class="date-cell">${item.End || '—'}</td>
       <td class="rent-cell">${rent}</td>
     </tr>`;
   }).join('');
-  tbody.innerHTML = rows || `<tr><td colspan="10" class="empty">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+  tbody.innerHTML = rows || `<tr><td colspan="11" class="empty">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
 }
 
 // ── SHOW SECTION ──
