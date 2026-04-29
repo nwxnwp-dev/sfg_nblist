@@ -446,6 +446,7 @@
   <button class="tab-btn active" data-tab="bkk">🏙️ SFL BKK</button>
   <button class="tab-btn" data-tab="pty">🌊 SFL PTY</button>
   <button class="tab-btn" data-tab="pmcg">📁 PMCG</button>
+  <button class="tab-btn" data-tab="sfc">🏢 SFC</button>
   <button class="tab-btn" data-tab="sfr">🍽️ SFR</button>
   <button class="tab-btn" data-tab="sct">🥢 SCT</button>
   <button class="tab-btn" data-tab="sff">🍱 SFF</button>
@@ -473,6 +474,10 @@
   <nav class="sidebar" id="sidebar-sfr" style="display:none">
     <div class="sidebar-label">SFR</div>
   </nav>
+  <!-- Sidebar SFC -->
+  <nav class="sidebar" id="sidebar-sfc" style="display:none">
+    <div class="sidebar-label">SFC</div>
+  </nav>
   <!-- Sidebar SCT -->
   <nav class="sidebar" id="sidebar-sct" style="display:none">
     <div class="sidebar-label">SCT</div>
@@ -499,6 +504,7 @@
     <div class="tab-panel" id="panel-pty"></div>
     <div class="tab-panel" id="panel-pmcg"></div>
     <div class="tab-panel" id="panel-sfr"></div>
+    <div class="tab-panel" id="panel-sfc"></div>
     <div class="tab-panel" id="panel-sct"></div>
     <div class="tab-panel" id="panel-sff"></div>
     <div class="tab-panel" id="panel-osh"></div>
@@ -528,8 +534,8 @@ function excelDateToStr(val) {
 // ── CONFIG ──
 const FLOW_URL = "https://defaultf7533d4f423a4a0e9c12b86f37e739.7a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1398f2dba1bb414692dd3d57ea09865b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=H6-Py6pn-MExAhqjSVUtNk1Se2_TizxNnQ-u4emid7U";
 
-const tabMap = { bkk: 'SFL BKK', pty: 'SFL PTY', pmcg: 'PMCG', sfr: 'SFR', sct: 'SCT', sff: 'SFF', osh: 'OSH', bak: 'BAK', duo: 'DUO' };
-const tabIcons = { bkk: '🏙️', pty: '🌊', pmcg: '📁', sfr: '🍽️', sct: '🥢', sff: '🍱', osh: '🍣', bak: '🥐', duo: '🥩' };
+const tabMap = { bkk: 'SFL BKK', pty: 'SFL PTY', pmcg: 'PMCG', sfr: 'SFR', sct: 'SCT', sff: 'SFF', osh: 'OSH', bak: 'BAK', duo: 'DUO', sfc: 'SFC' };
+const tabIcons = { bkk: '🏙️', pty: '🌊', pmcg: '📁', sfr: '🍽️', sct: '🥢', sff: '🍱', osh: '🍣', bak: '🥐', duo: '🥩', sfc: '🏢' };
 let DATA = {};
 let currentTab = 'bkk';
 let currentSection = {};
@@ -586,6 +592,9 @@ async function loadExcelData() {
               }
             }
           }
+
+          const modelVal = row[2] ? String(row[2]).trim() : '';
+          if (!modelVal || modelVal === '—') continue; // ข้ามแถวที่ไม่มี Model
 
           activeSection.items.push({
             status:   String(row[1] || 'IN').trim(),
