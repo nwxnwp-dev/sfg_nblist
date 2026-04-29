@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุปการใช้เครื่องคอมพิวเตอร์ของ SFL</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=TH+Sarabun:wght@400;700&display=swap');
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #f8fafc;
+    --border: #e2e8f0;
+    --text: #1a2332;
+    --text-muted: #64748b;
+    --accent: #1e40af;
+    --accent-light: #dbeafe;
+    --accent2: #0f766e;
+    --accent2-light: #ccfbf1;
+    --in-bg: #dcfce7;
+    --in-text: #15803d;
+    --in-border: #86efac;
+    --ex-bg: #fee2e2;
+    --ex-text: #b91c1c;
+    --ex-border: #fca5a5;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --header-h: 64px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #162032;
+    --border: #334155;
+    --text: #94a3b8;
+    --text-muted: #94a3b8;
+    --accent: #60a5fa;
+    --accent-light: #1e3a5f;
+    --accent2: #2dd4bf;
+    --accent2-light: #134e4a;
+    --in-bg: #14532d;
+    --in-text: #86efac;
+    --in-border: #166534;
+    --ex-bg: #450a0a;
+    --ex-text: #fca5a5;
+    --ex-border: #7f1d1d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body {
+    font-family: 'TH Sarabun', 'Sarabun', 'CordiaUPC', 'Cordia New', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #fff; font-weight: 700; flex-shrink: 0;
+  }
+  .header-title { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .header-subtitle { font-size: 13px; color: var(--text-muted); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  /* Theme toggle */
+  .theme-btn {
+    width: 44px; height: 24px; border-radius: 12px; border: none; cursor: pointer;
+    background: var(--border); position: relative; transition: background 0.3s;
+  }
+  .theme-btn::after {
+    content: '';
+    width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    position: absolute; top: 3px; left: 3px;
+    transition: transform 0.3s, background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  [data-theme="dark"] .theme-btn { background: var(--accent); }
+  [data-theme="dark"] .theme-btn::after { transform: translateX(20px); }
+  .theme-label { font-size: 13px; color: var(--text-muted); }
+
+  /* Search */
+  .search-wrap { position: relative; }
+  .search-input {
+    padding: 7px 14px 7px 36px; border-radius: 20px;
+    border: 1.5px solid var(--border); background: var(--surface2);
+    color: var(--text); font-family: inherit; font-size: 16px; width: 200px;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .search-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 15px; pointer-events: none;
+  }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    display: flex; gap: 0; padding: 0 24px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .tab-btn {
+    padding: 14px 28px; font-family: inherit; font-size: 17px; font-weight: 600;
+    border: none; background: none; cursor: pointer; color: var(--text-muted);
+    border-bottom: 3px solid transparent; margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: calc(100vh - var(--header-h) - 49px); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 190px; flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 16px 8px;
+    position: sticky; top: calc(var(--header-h) + 49px);
+    height: calc(100vh - var(--header-h) - 49px);
+    overflow-y: auto;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .sidebar-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); padding: 4px 10px 10px;
+  }
+  .sidebar-btn {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 9px 10px; border-radius: 8px; border: none;
+    background: none; cursor: pointer; font-family: inherit; font-size: 16px;
+    font-weight: 500; color: var(--text-muted); text-align: left;
+    transition: background 0.15s, color 0.15s; margin-bottom: 2px;
+  }
+  .sidebar-btn span:first-child { flex: 1; }
+  .sidebar-btn:hover { background: var(--accent-light); color: var(--accent); }
+  .sidebar-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 700; }
+  .sidebar-count {
+    font-size: 11px; background: var(--border); color: var(--text-muted);
+    padding: 2px 7px; border-radius: 10px; min-width: 28px; text-align: center;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .sidebar-btn.active .sidebar-count { background: var(--accent); color: #fff; }
+
+  /* Main content */
+  .main { flex: 1; padding: 24px; overflow-x: auto; }
+
+  /* ── STATS CARDS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    box-shadow: var(--shadow); transition: background 0.3s, border-color 0.3s;
+  }
+  .stat-label { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
+  .stat-card.accent .stat-value { color: var(--accent); }
+  .stat-card.green .stat-value { color: var(--in-text); }
+  .stat-card.red .stat-value { color: var(--ex-text); }
+
+  /* ── SECTION ── */
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700; color: var(--text);
+  }
+  .section-badge {
+    background: var(--accent-light); color: var(--accent);
+    font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow-x: auto; overflow-y: hidden;
+    box-shadow: var(--shadow); margin-bottom: 32px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  thead tr { background: var(--surface2); }
+  th {
+    padding: 11px 14px; text-align: left; font-size: 14px; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+    transition: background 0.3s;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  td { padding: 11px 14px; vertical-align: middle; }
+  td.nowrap { white-space: nowrap; }
+
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 14px; font-weight: 700; border: 1px solid;
+  }
+  .badge-in { background: var(--in-bg); color: var(--in-text); border-color: var(--in-border); }
+  .badge-ex { background: var(--ex-bg); color: var(--ex-text); border-color: var(--ex-border); }
+
+  .serial-code {
+    font-family: 'Courier New', monospace; font-size: 14px; font-weight: 600;
+    background: var(--surface2); padding: 2px 8px; border-radius: 6px;
+    color: var(--accent); border: 1px solid var(--border); white-space: nowrap;
+  }
+  .name-cell { font-weight: 600; }
+  .pos-cell { color: var(--text-muted); font-size: 15px; }
+  .rent-cell { font-weight: 700; color: var(--accent2); white-space: nowrap; }
+  .date-cell { font-size: 14px; color: var(--text-muted); white-space: nowrap; }
+  .model-cell { font-size: 15px; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 16px; }
+
+  /* ── HIDDEN ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .section-panel { display: none; }
+  .section-panel.active { display: block; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* ── MOBILE NAV ── */
+  .mobile-nav {
+    display: none;
+    overflow-x: auto;
+    padding: 8px 12px;
+    gap: 8px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mobile-nav::-webkit-scrollbar { display: none; }
+  .mobile-nav-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--surface2); cursor: pointer; font-family: inherit;
+    font-size: 15px; font-weight: 600; color: var(--text-muted);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .mobile-nav-btn.active {
+    background: var(--accent-light); color: var(--accent);
+    border-color: var(--accent);
+  }
+  .mobile-nav-count {
+    font-size: 11px; background: var(--border); color: var(--text-muted);
+    padding: 1px 6px; border-radius: 8px; transition: background 0.15s;
+  }
+  .mobile-nav-btn.active .mobile-nav-count { background: var(--accent); color: #fff; }
+
+  /* ── SECTION RENT ── */
+  .section-rent {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--accent2-light); color: var(--accent2);
+    font-size: 14px; font-weight: 700; padding: 3px 12px; border-radius: 20px;
+    margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 150px; }
+    .search-input { width: 130px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .section-header { flex-wrap: wrap; gap: 8px; }
+    .section-rent { margin-left: 0; }
+  }
+  /* Tab pills inside mobile-nav */
+  .mobile-nav-tab {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--accent);
+    background: none; cursor: pointer; font-family: inherit;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .mobile-nav-tab.active { background: var(--accent); color: #fff; }
+  .mobile-nav-divider {
+    width: 1px; height: 20px; background: var(--border);
+    flex-shrink: 0; align-self: center;
+  }
+
+  @media (max-width: 540px) {
+    .sidebar { display: none; }
+    .tabs-bar { display: none; }
+    .mobile-nav { display: flex; }
+    .main { padding: 12px; }
+    header { padding: 0 12px; }
+    .header-subtitle { display: none; }
+    .search-input { width: 110px; font-size: 13px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card { padding: 12px 14px; }
+    .stat-value { font-size: 22px; }
+    .section-title { font-size: 17px; }
+    td, th { padding: 9px 10px; font-size: 13px; }
+    .serial-code { font-size: 11px; }
+    .layout { min-height: unset; }
+    .table-wrap { border-radius: 8px; }
+  }
+  @media (max-width: 380px) {
+    .header-title { font-size: 14px; }
+    .search-input { width: 90px; font-size: 12px; }
+    .tab-btn { padding: 10px 12px; font-size: 13px; }
+    .stat-value { font-size: 19px; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header>
+  <div class="header-left">
+    <div class="logo-icon">💻</div>
+    <div>
+      <div class="header-title">สรุปการใช้เครื่องคอมพิวเตอร์</div>
+      <div class="header-subtitle">SFL — Bangkok & Pattaya</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="ค้นหา...">
+    </div>
+    <span class="theme-label" id="themeLabel">☀️</span>
+    <button class="theme-btn" id="themeToggle" title="สลับโหมด"></button>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" data-tab="bkk">🏙️ SFL BKK</button>
+  <button class="tab-btn" data-tab="pty">🌊 SFL PTY</button>
+</div>
+
+<div class="mobile-nav" id="mobile-nav"></div>
+
+<div class="layout">
+  <!-- Sidebar BKK -->
+  <nav class="sidebar" id="sidebar-bkk">
+    <div class="sidebar-label">สาขา BKK</div>
+  </nav>
+  <!-- Sidebar PTY -->
+  <nav class="sidebar" id="sidebar-pty" style="display:none">
+    <div class="sidebar-label">สาขา PTY</div>
+  </nav>
+
+  <div class="main">
+    <!-- BKK Panel -->
+    <div class="tab-panel active" id="panel-bkk"></div>
+    <!-- PTY Panel -->
+    <div class="tab-panel" id="panel-pty"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {"SFL BKK":[{"name":"Support BKK","items":[{"status":"IN","Model":"NB : DELL 3440","Serial":"H00G044","Position":"AGM Business Development ( BKK )","Nickname":"คุณไหม","Fullname":"SFL SLHQ : Manthira  Khanthadet","Start":"01/07/2024","End":"31/6/70","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"5MXY244","Position":"AGM ( BKK )","Nickname":"คุณปิง","Fullname":"SFL SLHQ : Thonkid  Supanyavut","Start":"10/11/2022","End":"09/11/2025","Rent":"1080.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"GY0B1D4","Position":"Admin ( BKK )","Nickname":"คุณแอน","Fullname":"SFL SLHQ : Parichat Eiamsakul","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"DNZX4D4","Position":"Kitchen Support ( BKK )","Nickname":"คุณหมวย","Fullname":"SFL SLHQ : Nutcharee Ruangchin","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"6PZX4D4","Position":"AGM ( BKK )","Nickname":"คุณเจนนี่","Fullname":"SFL SLHQ : Lattayar Kittawong","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"H01B1D4","Position":"Cluster Banquet ( BKK )","Nickname":"คุณเนตร","Fullname":"SFL SLHQ : Krisana Preekamol","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"7Z0B1D4","Position":"Corporate Chef ( BKK )","Nickname":"คุณจอน","Fullname":"SFL SLHQ : Thanawat Jaipoon","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : LENOVO YOGA 14'","Serial":"YX08SQNP","Position":"GM ( BKK )","Nickname":"คุณมน","Fullname":"SFL SLHQ : Kanita Kittisoros","Start":"01/06/2024","End":"31/05/2027","Rent":"1150.0"}]},{"name":"GPLC","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XGV","Position":"Admin","Nickname":"Admin","Fullname":"SFL GPLC : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XF1","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GPLC : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"เลขเครื่องหาย","Position":"Store","Nickname":"Store","Fullname":"SFL GPLC : STORE","Start":"","End":"","Rent":""},{"status":"IN","Model":"NB : DELL PRO14","Serial":"9Z0B1D4","Position":"Hostess","Nickname":"คุณนิ๊ง","Fullname":"SFL GPLC : Narumon Tantasen","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"3Z0B1D4","Position":"Banquet","Nickname":"คุณป๊อป","Fullname":"SFL GPLC : Panithan Penvipart","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"4NZX4D4","Position":"Demi Chef","Nickname":"คุณโรส","Fullname":"SFL GPLC : Supissana Inchan","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"4Z0B1D4","Position":"Branch Chef","Nickname":"คุณนัน","Fullname":"SFL GPLC : Anan  Sattapan","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"C01B1D4","Position":"Asst. F&B Manager","Nickname":"คุณโบว์","Fullname":"SFL GPLC : Penpak Jamsai","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"GS55","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XH8","Position":"Executive Sous Chef","Nickname":"คุณกอล์ฟ","Fullname":"SFL GS55 : Weerachai Boonchuay","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XFP","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GS55 : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XFX","Position":"Store","Nickname":"Store","Fullname":"SFL GS55 : Store","Start":"","End":"","Rent":""},{"status":"IN","Model":"AIO : HP G9","Serial":"8CN3510FM7","Position":"Admin","Nickname":"คุณส้ม","Fullname":"SFL GS55 : Admin","Start":"01/05/2024","End":"30/04/2027","Rent":"1140.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"3PXBQ14","Position":"F&B Manager","Nickname":"คุณนุ่ม","Fullname":"SFL GS55 : Siyamol Theangngok","Start":"20/12/2024","End":"19/12/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"GZ0B1D4","Position":"Hostess","Nickname":"คุณหน่อย","Fullname":"SFL CPTL : Walaiporn Butdee","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"BPZX4D4","Position":"F&B Manager","Nickname":"คุณตั้ม","Fullname":"SFL GS55 : Phairoj Inthron","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"J3WZ0D4","Position":"Asst. F&B Manager","Nickname":"คุณละห์","Fullname":"SFL GS55 : Porntiwa Cheunchom","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"73WZ0D4","Position":"Banquet","Nickname":"Banquet","Fullname":"SFL GS55 : Pathama Muenla","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"94WZ0D4","Position":"Restaurant Mgr.","Nickname":"คุณจูน","Fullname":"SFL GS55 : Jamnong Kidkhayan","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"GT21","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XG7","Position":"Admin","Nickname":"คุณบูม","Fullname":"SFL GT21 : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XF8","Position":"Hostess","Nickname":"Hostess","Fullname":"SFL GT21 : HOSTESS","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"หมายเลขเครื่องหาย","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GT21 : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XF3","Position":"Sous Chef","Nickname":"คุณเนิฟ","Fullname":"SFL GT21 : Sous Chef","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XGG","Position":"Store","Nickname":"Store","Fullname":"SFL GT21 : STORE","Start":"","End":"","Rent":""},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD3236TKB","Position":"Executive Sous Chef","Nickname":"คุณกอล์ฟ","Fullname":"SFL GT21 : Thamphon Bannprasert","Start":"25/08/2023","End":"24/08/2026","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"CWVS814","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GT21 : KITCHEN CO.","Start":"01/07/2024","End":"31/08/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"G3WZ0D4","Position":"F&B Manager","Nickname":"คุณเฟรซ","Fullname":"SFL GT21 : Wissawin Vathatham","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"9NZX4D4","Position":"Restaurant Mgr.","Nickname":"คุณเจเค","Fullname":"SFL GT21 : Riwin Yongyingsakthaworn","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"DPZX4D4","Position":"Restaurant Mgr.","Nickname":"คุณตาล","Fullname":"SFL GT21 : Nuttakarn  Apinaiprasert","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"GRD1","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XDC","Position":"Admin","Nickname":"คุณหนิง","Fullname":"SFL GRD1 : Laddawan Saochai","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"","Position":"Hostess","Nickname":"Hostess","Fullname":"SFL GRD1 : HOSTESS","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XHC","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GRD1 : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG0132B68","Position":"Store","Nickname":"Store","Fullname":"SFL GRD1 : STORE","Start":"","End":"","Rent":""},{"status":"EX","Model":"NB : DELL 3410","Serial":"6C0JX93","Position":"Restaurant Mgr.","Nickname":"คุณเอ็ม","Fullname":"SFL GRD1: Patcharin Wongboot","Start":"01/05/2021","End":"30/04/2025","Rent":""},{"status":"IN","Model":"NB : DELL PRO14","Serial":"F01B1D4","Position":"Banquet","Nickname":"คุณกัน","Fullname":"SFL GRD1 : Kannakrit Vongsodsai","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"CPZX4D4","Position":"Restaurant Mgr.","Nickname":"คุณแม็ค","Fullname":"SFL GRD1 : Sanya Supa","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"82WZ0D4","Position":"Asst. Restaurant Mgr.","Nickname":"คุณป๊อบ","Fullname":"SFL GRD1 : HOSTESS","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"4NXBQ14","Position":"Executive Chef","Nickname":"คุณต้น","Fullname":"SFL GRD1 : Parsin","Start":"25/12/2024","End":"24/12/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"GRDFM54","Position":"Store OE Prestige","Nickname":"คุณบอล","Fullname":"SFL GRD1 : Kriangkrai Phetraksa","Start":"25/03/2025","End":"24/03/2028","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"6TDFM54","Position":"F&B Manager","Nickname":"คุณเกศ","Fullname":"SFL GRD1 : Soraya Mingkwan","Start":"25/03/2025","End":"24/03/2028","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"DSDFM54","Position":"Asst. F&B Manager","Nickname":"คุณกุ้งนาง","Fullname":"SFL GRD1 : Kanokkan Liwatthanakun","Start":"10/03/2025","End":"09/03/2028","Rent":"1120.0"}]},{"name":"GSRW","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XHN","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL GSRW : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG93413X","Position":"Store","Nickname":"Store","Fullname":"SFL GSRW : Store","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XHL","Position":"ส่วนกลาง","Nickname":"ส่วนกลาง","Fullname":"SFL GSRW : Office","Start":"","End":"","Rent":""},{"status":"IN","Model":"NB : DELL 3440","Serial":"B10GO044","Position":"สำหรับ FBM","Nickname":"","Fullname":"","Start":"01/07/2024","End":"31/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"FZ0B1D4","Position":"Admin","Nickname":"คุณแพร","Fullname":"SFL GSRW : Admin","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"FNZX4D4","Position":"Executive Chef","Nickname":"คุณหนุ่ม","Fullname":"SFL GSRW : Bodin Takhiao","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB1Z","Position":"Asst. F&B Manager","Nickname":"คุณหนิง","Fullname":"SFL GSRW : Niruebol  Kongrut","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB38","Position":"Banquet","Nickname":"Banquet","Fullname":"SFL GSRW : Banquet","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB4M","Position":"Hostess","Nickname":"Hostess","Fullname":"SFL GSRW : HOSTESS HUA","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB56","Position":"","Nickname":"","Fullname":"","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB74","Position":"Restaurant Mgr.","Nickname":"Hostess","Fullname":"SFL GSRW : Bangrak grill HOSTESS","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD3236TGY","Position":"Sous","Nickname":"โน๊ต","Fullname":"SFL GSRW : Bangrak grill Kitchen","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD3236TKT","Position":"","Nickname":"คุณมนต์","Fullname":"SFL GSRW : Lumduan Soyjit","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"}]},{"name":"GLPN","items":[{"status":"EX","Model":"NB : HP 440 G4","Serial":"5CD7465JTD","Position":"Kitchen Coordinator","Nickname":"Kitchen CO","Fullname":"SGL GLPN : Kitchen Coordinator","Start":"","End":"","Rent":""},{"status":"EX","Model":"NB : HP 440 G5","Serial":"5CD849C1V7","Position":"Executive Sous Chef (Pastry)","Nickname":"คุณเก่ง","Fullname":"SFL GLPN : Maitri Suwanmongkol","Start":"","End":"","Rent":"1080.0"},{"status":"IN","Model":"NB : HP 440 G9","Serial":"5CD240DRHY","Position":"BQ Coordinator","Nickname":"คุณฟองเบียร์","Fullname":"SFL GLPN : BQ Coordinator","Start":"10/11/2022","End":"09/11/2025","Rent":"1080.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"HZ0B1D4","Position":"Executive Chef","Nickname":"คุณแปง","Fullname":"SFL GLPN : Chuchart Keawnang","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"AIO : LENOVO","Serial":"MP2G51HZ","Position":"Kitchen Coordinator","Nickname":"Kitchen Coordinator","Fullname":"SFL GLPN : KITCHEN CO.","Start":"01/08/2024","End":"31/08/2027","Rent":"890.0"},{"status":"IN","Model":"AIO : LENOVO","Serial":"MP2G49E9","Position":"Hostess","Nickname":"Hostess","Fullname":"SFL GLPN : Hostess","Start":"01/08/2024","End":"31/08/2027","Rent":"890.0"},{"status":"IN","Model":"AIO : LENOVO","Serial":"MP2G49E2","Position":"ส่วนกลาง","Nickname":"ส่วนกลาง","Fullname":"SFL GLPN : Office","Start":"01/08/2024","End":"31/08/2027","Rent":"890.0"},{"status":"IN","Model":"AIO : LENOVO M90s","Serial":"GM0Y8LJR","Position":"","Nickname":"","Fullname":"","Start":"20/10/68","End":"19/10/71","Rent":"1060.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"2LXY244","Position":"F&B Manager","Nickname":"คุณมาย","Fullname":"SFL GLPN : Thanawan Sawangsub","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"5LXY244","Position":"Restaurant Mgr.","Nickname":"คุณออย","Fullname":"SFL GLPN : Nuntawat Wongsala","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"5NXY244","Position":"BQ Manager","Nickname":"คุณแก้ว","Fullname":"SFL GLPN : Phakakaew Ruangsinkonlakarn","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"8WVS814","Position":"Store","Nickname":"Store","Fullname":"SFL GLPN : STORE","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"9LXY244","Position":"BQ Coordinator","Nickname":"Rest Mgr. Malai","Fullname":"","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"BLXY244","Position":"Store","Nickname":"คุณม่อน","Fullname":"SFL GLPN : STORE","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"BXVS814","Position":"Admin","Nickname":"คุณการ์ตูน","Fullname":"SFL GLPN : Suthasinee","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"DLXY244","Position":"Ex Sous Chef ABF","Nickname":"คุณจร","Fullname":"SFL GLPN : Kajohnsak Wanthawong","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"JKXY244","Position":"Ex Sous Chef BQ","Nickname":"คุณศักดิ์","Fullname":"SFL GLPN : Adisak Kongthong","Start":"16/10/2024","End":"15/10/2027","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"CMXY244","Position":"Ex Sous LEVEL 50","Nickname":"","Fullname":"","Start":"16/10/2024","End":"15/10/2027","Rent":"1121.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"3NXY244","Position":"Asst. F&B Manager","Nickname":"","Fullname":"","Start":"16/10/2024","End":"15/10/2027","Rent":"1122.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"2XVT874","Position":"BQ Manager","Nickname":"คุณเอ","Fullname":"SFL GLPN : Youttapichai Sae-Tiao","Start":"01/03/2025","End":"28/02/2028","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"GSDFM54","Position":"Hostess LEVEL 50","Nickname":"","Fullname":"","Start":"20/03/2025","End":"19/03/2028","Rent":"1120.0"}]},{"name":"GPST","items":[{"status":"EX","Model":"NB : HP 440 G5","Serial":"5CD849C1WW","Position":"Chief Steward","Nickname":"คุณเบ้นซ์","Fullname":"SFL GPST : Thanakorn Narapong","Start":"","End":"","Rent":""},{"status":"IN","Model":"NB : DELL 3450","Serial":"1KVT874","Position":"Ex Sous Chef (Bakery)","Nickname":"คุณเล็ก","Fullname":"SFL GPST : Piyanut Ketphu","Start":"01/03/2025","End":"28/02/2028","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"7TFWM84","Position":"AGM","Nickname":"คุณนุ่น","Fullname":"SFL SLHQ : Chatchanok Thongkaimuk","Start":"25/06/2025","End":"24/06/2028","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"C2MWM84","Position":"Restaurant Manager","Nickname":"คุณแนน","Fullname":"SFL GPST : Onuma Meesit","Start":"25/06/2025","End":"24/06/2028","Rent":"1120.0"},{"status":"IN","Model":"NB : DELL 3450","Serial":"9ZHWM84","Position":"BQ F&B Manager","Nickname":"คุณหยี","Fullname":"SFL GPST : Phansak Wongthai","Start":"25/06/2025","End":"24/06/2028","Rent":"1120.0"},{"status":"IN","Model":"AIO : LENOVO M90s","Serial":"GM0Y8LK6","Position":"","Nickname":"คุณพลอย","Fullname":"SFL GPST : Ploykamon Kittiphop","Start":"01/09/2025","End":"31/08/2028","Rent":"1060.0"},{"status":"IN","Model":"AIO : LENOVO M90s","Serial":"GM0Y8LK3","Position":"","Nickname":"คุณกอล์ฟ","Fullname":"SFL GPST : Krittayos Sirimart","Start":"01/09/2025","End":"31/08/2028","Rent":"1060.0"},{"status":"IN","Model":"AIO : LENOVO M90s","Serial":"GM0Y080Z","Position":"GPST Office","Nickname":"ส่วนกลาง","Fullname":"SFL GPST : Office","Start":"01/09/2025","End":"31/08/2028","Rent":"1060.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"7PZX4D4","Position":"Kitchen Co","Nickname":"คุณเฌอแตม","Fullname":"SFL GPST : Kallaya Khodcharat","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"G4WZ0D4","Position":"Chef","Nickname":"คุณอ้น","Fullname":"SFL GPST : Vivatchai Vijitsak","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"BDQ4CC4","Position":"","Nickname":"คุณน้ำฝน","Fullname":"SFL GPST : Namfon Promtong","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"CDQ4CC4","Position":"HOST Bloom & Blew","Nickname":"Bloom & Blew","Fullname":"SFL GPST : Host","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"DDQ4CC4","Position":"HOST The Garden","Nickname":"The Garden","Fullname":"SFL GPST : Host","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"3DQ4CC4","Position":"","Nickname":"คุณหมวย","Fullname":"","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"4DQ4CC4","Position":"","Nickname":"","Fullname":"","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"5DQ4CC4","Position":"","Nickname":"","Fullname":"","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"6DQ4CC4","Position":"","Nickname":"คุณฉุย","Fullname":"SFL GPST : Somchai Pholthorn","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"7DQ4CC4","Position":"Admin","Nickname":"คุณหนิง","Fullname":"SFL GPST : Admin","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"8DQ4CC4","Position":"","Nickname":"คุณแบงค์","Fullname":"","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"9DQ4CC4","Position":"","Nickname":"คุณตู่","Fullname":"SFL GPST : Weerapunt U","Start":"10/09/2025","End":"09/09/2029","Rent":"880.0"}]}],"SFL PTY":[{"name":"Support PTY","items":[{"status":"EX","Model":"MacBook Air","Serial":"NM0G9D0046","Position":"MKT ( PTY )","Nickname":"คุณลอนอ","Fullname":"SFL SLHQ : Patcharapa Thongthep","Start":"01/11/2022","End":"31/10/2025","Rent":"2200.0"},{"status":"IN","Model":"NB : LENOVO YOGA 14'","Serial":"YX08SQNT","Position":"GM (PTY)","Nickname":"คุณน้ำ","Fullname":"SFL SLHQ : Neera Rachjaibun","Start":"01/06/2024","End":"01/06/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"JXVS814","Position":"Corporate Chef ( PTY )","Nickname":"คุณเอ้","Fullname":"SFL SLHQ : Kriangwit Kanoksabphum","Start":"01/04/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"9ZVS814","Position":"Cost Audit ( PTY )","Nickname":"คุณวัฒน์","Fullname":"SFL SLHQ : Niwat  Singsai","Start":"01/04/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322H9ZF","Position":"Kitchen Support ( PTY )","Nickname":"คุณปู","Fullname":"SFL SLHQ : Lalita  Chairangsee","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD322HB6Q","Position":"PUR ( PTY)","Nickname":"คุณเฟิร์น","Fullname":"SFL SLHQ : Sasinan Lamduan","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD3236TKQ","Position":"Admin ( PTY )","Nickname":"คุณไอติม","Fullname":"SFL SLHQ : Apiradee Jomfon","Start":"25/08/2023","End":"24/08/2026","Rent":"1130.0"},{"status":"IN","Model":"NB : HP 440 G10","Serial":"5CD350G6FG","Position":"Business Development ( PTY )","Nickname":"คุณเมย์","Fullname":"SFL SLHQ : Preeyanut Kunwanna","Start":"22/04/2024","End":"21/04/2027","Rent":"1330.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"5NZX4D4","Position":"MKT ( PTY )","Nickname":"คุณปูน","Fullname":"SFL SLHQ : Sumittra  Tunkaew","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"FPZX4D4","Position":"Training Operation","Nickname":"คุณบุ๊ค","Fullname":"SFL SLHQ : Suthira Pragobsai","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"PRIM","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XD0","Position":"Admin","Nickname":"คุณแพร","Fullname":"SFL PRIM : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XCW","Position":"Store","Nickname":"คุณบิว","Fullname":"SFL PRIM : Store","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528FN","Position":"Kitchen CO","Nickname":"คุณโรส","Fullname":"SFL PRIM : Kitchen CO","Start":"","End":"","Rent":""},{"status":"IN","Model":"NB : DELL 3440","Serial":"2XVS814","Position":"Sous Chef","Nickname":"Sous Chef","Fullname":"SFL PRIM : Sous Chef","Start":"01/05/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"CZ0B1D4","Position":"Asst. F&B Manager","Nickname":"คุณเอ็กซ์","Fullname":"SFL PRIM : Surachart Chairangsri","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"8NZX4D4","Position":"Restaurant Mgr.","Nickname":"คุณดา","Fullname":"SFL PRIM : Wannee  Netin","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"SPAC","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XG5","Position":"Admin","Nickname":"คุณพีค","Fullname":"SFL SPAC : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XH1","Position":"Admin Store","Nickname":"คุณปอนด์","Fullname":"SFL SPAC : Chonticha Saonoi","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XFQ","Position":"Hostess","Nickname":"คุณเจน","Fullname":"SFL SPAC : HOSTESS","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XFM","Position":"Kitchen CO","Nickname":"คุณออย","Fullname":"SFL SPAC : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XFS","Position":"Kitchen CO","Nickname":"คุณไอศครีม","Fullname":"SFL SPAC : Parkamon Kaowchui","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XDR","Position":"Admin","Nickname":"คุณใบตอง","Fullname":"SFL SPAC : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XDH","Position":"Store","Nickname":"คุณเอก","Fullname":"SFL SPAC : STORE","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"หมายเลขหาย","Position":"บุชเชอร์","Nickname":"บุชเชอร์","Fullname":"SFL SPAC : บุชเชอร์","Start":"","End":"","Rent":""},{"status":"EX","Model":"NB : LENOVO E14","Serial":"PF2GY7Y0","Position":"Asst. Steward","Nickname":"คุณวิทย์","Fullname":"SFL SPAC : Kritnaphol Sukbantheong","Start":"","End":"","Rent":""},{"status":"EX","Model":"NB : LENOVO E14","Serial":"PF2GYBZH","Position":"Steward Supervisor","Nickname":"Steward","Fullname":"SFL SPAC : Steward","Start":"","End":"","Rent":""},{"status":"IN","Model":"AIO : LENOVO","Serial":"MP2AALKA","Position":"Support Center ( PTY )","Nickname":"Hot Seat หน้า Office","Fullname":"SFL SPAC : Hot Seat หน้า Office","Start":"01/08/2024","End":"31/08/2027","Rent":"890.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"JZZF044","Position":"Ex. Sous Chef","Nickname":"คุณโย","Fullname":"SFL SPAC : Pinyo Phukam","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"9XVS814","Position":"Restaurant Mgr.","Nickname":"ORBIT","Fullname":"SFL SPOB : ORBIT","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"5YVS814","Position":"Restaurant Mgr.","Nickname":"OORD CLOUD","Fullname":"SFL SPOC : OORD CLOUD","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"DYVS814","Position":"Asst. F&B Manager","Nickname":"คุณปู","Fullname":"SFL SPAC : Nida  Rattanacherdkiat","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"2YVS814","Position":"Banquet","Nickname":"Banquet","Fullname":"SFL SPOB : Banquet Admin","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"7YVS814","Position":"Kitchen CO","Nickname":"Kitchen CO","Fullname":"SFL SPAC : KITCHEN CO.","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"GXVS814","Position":"Receiving","Nickname":"คุณทิพย์","Fullname":"SFL SPAC : Porntip  Utama","Start":"12/07/2024","End":"11/07/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"B01B1D4","Position":"Banquet Mgr.","Nickname":"คุณโจ้","Fullname":"SFL SPOB : Chaiyaporn Kuesri","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"2Z0B1D4","Position":"Ex.Chef","Nickname":"คุณนิค","Fullname":"SFL SPAC : Chaiyatath Thammaraksa","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"8Z0B1D4","Position":"F&B Manager","Nickname":"คุณยีนส์","Fullname":"SFL SPAC : Jantima  MingKwan","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"JY0B1D4","Position":"Restaurant Mgr.","Nickname":"คุณกั้ง","Fullname":"SFL SPBB : Manob Sarnvech","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"DY0B1D4","Position":"Restaurant Mgr.","Nickname":"คุณเก่ง","Fullname":"SFL SPOB : Pokeeya Taithong","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"D01B1D4","Position":"Restaurant Mgr.","Nickname":"คุณกิ๊ฟ","Fullname":"SFL SPSL : Dowjai Sresana","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]},{"name":"GRAN","items":[{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XCY","Position":"Admin","Nickname":"คุณกระต่าย","Fullname":"SFL GRAN : Admin","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XHN","Position":"Office","Nickname":"Hot Seat","Fullname":"SFL GRAN : Office","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XCT","Position":"Kitchen CO","Nickname":"คุณบิ๋ม","Fullname":"SFL GRAN : KITCHEN CO.","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XG3","Position":"","Nickname":"","Fullname":"","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XH3","Position":"Store","Nickname":"คุณวรรณ","Fullname":"SFL GRAN : Admin Store","Start":"","End":"","Rent":""},{"status":"EX","Model":"AIO : HP","Serial":"8CG8528XDX","Position":"Office","Nickname":"Hot Seat","Fullname":"SFL GRAN : Office","Start":"","End":"","Rent":""},{"status":"IN","Model":"AIO : HP G9","Serial":"8CN3510FLG","Position":"Ex.Sous Chef","Nickname":"Admin Kitchen Co.","Fullname":"SFL GRAN : Ex.Sous Chef","Start":"01/05/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"4XVS814","Position":"Hostess","Nickname":"คุณริน","Fullname":"SFL GRAN : Somjai Saunboon","Start":"01/05/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL 3440","Serial":"D6FZLX3","Position":"Store","Nickname":"คุณเติ้ง","Fullname":"SFL GRAN : STORE","Start":"01/05/2024","End":"30/04/2027","Rent":"1150.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"HY0B1D4","Position":"Banquet","Nickname":"คุณมี่","Fullname":"SFL SPOB : Phakin  Thaithong","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"CNZX4D4","Position":"Restaurant Mgr.","Nickname":"คุณชัย","Fullname":"SFL GRAN : The Sky 32","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"GNZX4D4","Position":"F&B Manager","Nickname":"คุณกาแฟ","Fullname":"SFL GRAN : Thanyarat On-Nom","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"FY0B1D4","Position":"Restaurant Mgr.","Nickname":"คุณมิว","Fullname":"SFL GRAN : Wave & Wind","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"},{"status":"IN","Model":"NB : DELL PRO14","Serial":"G01B1D4","Position":"Office","Nickname":"คุณบุ๋มบิ๋ม","Fullname":"SFL GRAN : Office","Start":"01/11/2025","End":"31/10/2029","Rent":"880.0"}]}]};
+
+// ── INIT ──
+const tabMap = { bkk: 'SFL BKK', pty: 'SFL PTY' };
+let currentTab = 'bkk';
+let currentSection = {};
+let searchQuery = '';
+
+function calcStats(sections) {
+  let total = 0, inCount = 0, exCount = 0, totalRent = 0;
+  sections.forEach(s => s.items.forEach(i => {
+    total++;
+    if (i.status === 'IN') { inCount++; if (i.Rent) totalRent += parseFloat(i.Rent); }
+    else exCount++;
+  }));
+  return { total, inCount, exCount, totalRent };
+}
+
+function fmt(n) { return n.toLocaleString('th-TH'); }
+
+function buildSidebar(tabKey, sections) {
+  const sb = document.getElementById(`sidebar-${tabKey}`);
+  const label = sb.querySelector('.sidebar-label');
+  sb.innerHTML = '';
+  sb.appendChild(label);
+  sections.forEach((sec, i) => {
+    const total = sec.items.length;
+    const inC = sec.items.filter(x => x.status === 'IN').length;
+    const btn = document.createElement('button');
+    btn.className = 'sidebar-btn' + (i === 0 ? ' active' : '');
+    btn.dataset.section = sec.name;
+    btn.innerHTML = `<span>${sec.name}</span><span class="sidebar-count">${inC}/${total}</span>`;
+    btn.onclick = () => showSection(tabKey, sec.name);
+    sb.appendChild(btn);
+  });
+}
+
+function buildMobileNav(tabKey, sections) {
+  const mn = document.getElementById('mobile-nav');
+  mn.innerHTML = '';
+  // Tab pills
+  Object.entries(tabMap).forEach(([key, label]) => {
+    const icons = { bkk: '🏙️', pty: '🌊' };
+    const tbtn = document.createElement('button');
+    tbtn.className = 'mobile-nav-tab' + (key === tabKey ? ' active' : '');
+    tbtn.dataset.tab = key;
+    tbtn.textContent = icons[key] + ' ' + key.toUpperCase();
+    tbtn.onclick = () => switchTab(key);
+    mn.appendChild(tbtn);
+  });
+  // Divider
+  const div = document.createElement('span');
+  div.className = 'mobile-nav-divider';
+  mn.appendChild(div);
+  // Section pills
+  sections.forEach((sec, i) => {
+    const total = sec.items.length;
+    const inC = sec.items.filter(x => x.status === 'IN').length;
+    const mbtn = document.createElement('button');
+    mbtn.className = 'mobile-nav-btn' + (i === 0 ? ' active' : '');
+    mbtn.dataset.section = sec.name;
+    mbtn.innerHTML = `${sec.name}<span class="mobile-nav-count">${inC}/${total}</span>`;
+    mbtn.onclick = () => showSection(tabKey, sec.name);
+    mn.appendChild(mbtn);
+  });
+}
+
+function buildPanel(tabKey, sections) {
+  const panel = document.getElementById(`panel-${tabKey}`);
+  const stats = calcStats(sections);
+
+  // Stats row
+  const statsHtml = `
+    <div class="stats-row">
+      <div class="stat-card accent"><div class="stat-label">เครื่องทั้งหมด</div><div class="stat-value">${stats.total}</div></div>
+      <div class="stat-card green"><div class="stat-label">IN (เช่า)</div><div class="stat-value">${stats.inCount}</div></div>
+      <div class="stat-card red"><div class="stat-label">EX (บริษัท)</div><div class="stat-value">${stats.exCount}</div></div>
+      <div class="stat-card"><div class="stat-label">ค่าเช่า/เดือน</div><div class="stat-value" style="font-size:22px">${fmt(stats.totalRent)} ฿</div></div>
+    </div>`;
+
+  // Section panels
+  const sectionsHtml = sections.map((sec, i) => {
+    const secRent = sec.items.reduce((s, x) => x.status === 'IN' && x.Rent ? s + parseFloat(x.Rent) : s, 0);
+    const rentBadge = secRent > 0 ? `<div class="section-rent">💰 ${fmt(secRent)} ฿/เดือน</div>` : '';
+    return `<div class="section-panel ${i === 0 ? 'active' : ''}" id="${tabKey}-${sec.name}">
+      <div class="section-header">
+        <div class="section-title">📍 ${sec.name}</div>
+        <div class="section-badge">${sec.items.length} เครื่อง</div>
+        ${rentBadge}
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th>
+            <th>สถานะ</th>
+            <th>รุ่นเครื่อง</th>
+            <th>หมายเลขเครื่อง</th>
+            <th>แผนก / ตำแหน่ง</th>
+            <th>ชื่อเล่น</th>
+            <th>ชื่อ - นามสกุล</th>
+            <th>วันเริ่ม</th>
+            <th>วันสิ้นสุด</th>
+            <th>ค่าเช่า (บาท)</th>
+          </tr></thead>
+          <tbody id="tbody-${tabKey}-${sec.name}">
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = statsHtml + sectionsHtml;
+
+  // Fill table rows
+  sections.forEach(sec => {
+    renderRows(tabKey, sec);
+  });
+}
+
+function renderRows(tabKey, sec, filter = '') {
+  const tbody = document.getElementById(`tbody-${tabKey}-${sec.name}`);
+  if (!tbody) return;
+  const q = filter.toLowerCase();
+  let idx = 0;
+  const rows = sec.items.map(item => {
+    if (q && !Object.values(item).join(' ').toLowerCase().includes(q)) return '';
+    idx++;
+    const badge = item.status === 'IN'
+      ? `<span class="badge badge-in">IN</span>`
+      : `<span class="badge badge-ex">EX</span>`;
+    const rent = item.Rent ? `${parseFloat(item.Rent).toLocaleString('th-TH')} ฿` : `<span style="color:var(--text-muted)">—</span>`;
+    const serial = item.Serial ? `<span class="serial-code">${item.Serial}</span>` : '—';
+    return `<tr>
+      <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
+      <td class="nowrap">${badge}</td>
+      <td class="model-cell">${item.Model || '—'}</td>
+      <td class="nowrap">${serial}</td>
+      <td class="pos-cell">${item.Position || '—'}</td>
+      <td class="name-cell nowrap">${item.Nickname || '—'}</td>
+      <td style="font-size:13px">${item.Fullname || '—'}</td>
+      <td class="date-cell">${item.Start || '—'}</td>
+      <td class="date-cell">${item.End || '—'}</td>
+      <td class="rent-cell">${rent}</td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML = rows || `<tr><td colspan="10" class="empty">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+}
+
+function showSection(tabKey, secName) {
+  currentSection[tabKey] = secName;
+  // Update sidebar
+  document.querySelectorAll(`#sidebar-${tabKey} .sidebar-btn`).forEach(b => {
+    b.classList.toggle('active', b.dataset.section === secName);
+  });
+  // Update mobile-nav section pills
+  document.querySelectorAll('#mobile-nav .mobile-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.section === secName);
+  });
+  // Update panels
+  document.querySelectorAll(`#panel-${tabKey} .section-panel`).forEach(p => {
+    p.classList.toggle('active', p.id === `${tabKey}-${secName}`);
+  });
+  // Scroll active btn into view on mobile
+  const activeBtn = document.querySelector('#mobile-nav .mobile-nav-btn.active');
+  if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+  document.querySelectorAll('.sidebar').forEach(s => s.style.display = 'none');
+  document.getElementById(`sidebar-${tab}`).style.display = 'block';
+  buildMobileNav(tab, DATA[tabMap[tab]]);
+  currentSection[tab] = DATA[tabMap[tab]][0].name;
+  showSection(tab, currentSection[tab]);
+}
+
+// ── BUILD ALL ──
+Object.entries(tabMap).forEach(([key, sheet]) => {
+  const sections = DATA[sheet];
+  buildSidebar(key, sections);
+  buildPanel(key, sections);
+  currentSection[key] = sections[0].name;
+});
+// Build initial mobile nav for bkk
+buildMobileNav('bkk', DATA[tabMap['bkk']]);
+
+// ── TAB CLICKS ──
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.onclick = () => switchTab(b.dataset.tab);
+});
+
+// ── THEME TOGGLE ──
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+themeToggle.onclick = () => {
+  const isDark = document.body.dataset.theme === 'dark';
+  document.body.dataset.theme = isDark ? 'light' : 'dark';
+  themeLabel.textContent = isDark ? '☀️' : '🌙';
+};
+
+// ── SEARCH ──
+document.getElementById('searchInput').addEventListener('input', function() {
+  searchQuery = this.value;
+  const sections = DATA[tabMap[currentTab]];
+  sections.forEach(sec => renderRows(currentTab, sec, searchQuery));
+  if (searchQuery) {
+    // Show all sections when searching
+    document.querySelectorAll(`#panel-${currentTab} .section-panel`).forEach(p => p.classList.add('active'));
+  } else {
+    document.querySelectorAll(`#panel-${currentTab} .section-panel`).forEach(p => {
+      p.classList.toggle('active', p.id === `${currentTab}-${currentSection[currentTab]}`);
+    });
+  }
+});
+</script>
+</body>
+</html>
