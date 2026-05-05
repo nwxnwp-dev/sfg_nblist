@@ -248,6 +248,26 @@
   .date-cell { font-size: 14px; color: var(--text-muted); white-space: nowrap; }
   .model-cell { font-size: 15px; }
 
+  /* ── VACANT ROW (ว่าง) ── */
+  tr.row-vacant {
+    background: linear-gradient(90deg, #ffebeb 0%, #fee8e8 100%);
+  }
+  [data-theme="dark"] tr.row-vacant {
+    background: linear-gradient(90deg, #2d0000 0%, #1e0000 100%);
+  }
+  tr.row-vacant:hover {
+    background: linear-gradient(90deg, #fec7c7 0%, #fd8a8a33 100%);
+  }
+  .badge-vacant {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #fec3c3; color: #850e0e; border: 1.5px dashed #ca0404;
+    padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 700;
+    white-space: nowrap; letter-spacing: 0.3px;
+  }
+  [data-theme="dark"] .badge-vacant {
+    background: #3d0000; color: #fd8a8a; border-color: #ff0000;
+  }
+
   /* Empty state */
   .empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 16px; }
 
@@ -448,7 +468,7 @@
   <button class="tab-btn" data-tab="pmcg">📁 PMCG</button>
   <button class="tab-btn" data-tab="sfc">🏢 SFC</button>
   <button class="tab-btn" data-tab="sfr">🍽️ SFR</button>
-  <button class="tab-btn" data-tab="sct">🥢 SCT</button>
+  <button class="tab-btn" data-tab="sct">🥣 SCT</button>
   <button class="tab-btn" data-tab="sff">🥩 SFF</button>
   <button class="tab-btn" data-tab="osh">🍱 OSH</button>
   <button class="tab-btn" data-tab="bak">☕ BAK</button>
@@ -746,6 +766,7 @@ function renderRows(tabKey, sec, filter = '') {
   const rows = sec.items.map(item => {
     if (q && !Object.values(item).join(' ').toLowerCase().includes(q)) return '';
     idx++;
+    const isVacant = (item.Nickname || '').toString().trim() === 'ว่าง';
     const badge = item.status === 'IN'
       ? `<span class="badge badge-in">IN</span>`
       : `<span class="badge badge-ex">EX</span>`;
@@ -754,15 +775,18 @@ function renderRows(tabKey, sec, filter = '') {
     const modelCell = `<div class="model-cell">${item.Model || '—'}</div>${serial ? `<div style="margin-top:4px">${serial}</div>` : ''}`;
     const emailCell = item.Email ? `<a href="mailto:${item.Email}" style="color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap">${item.Email}</a>` : `<span style="color:var(--text-muted)">—</span>`;
     const phoneCell = item.Phone ? `<a href="tel:${item.Phone}" style="color:var(--accent2);font-size:13px;text-decoration:none;white-space:nowrap">📞 ${item.Phone}</a>` : `<span style="color:var(--text-muted)">—</span>`;
-    return `<tr>
+    const nicknameCell = isVacant
+      ? `<span class="badge-vacant">💻 ว่าง</span>`
+      : `${item.Nickname || '—'}`;
+    return `<tr${isVacant ? ' class="row-vacant"' : ''}>
       <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
       <td class="nowrap">${badge}</td>
       <td>${modelCell}</td>
       <td class="pos-cell">${item.Position || '—'}</td>
-      <td class="name-cell nowrap">${item.Nickname || '—'}</td>
-      <td style="font-size:13px">${item.Fullname || '—'}</td>
-      <td>${emailCell}</td>
-      <td>${phoneCell}</td>
+      <td class="name-cell nowrap">${nicknameCell}</td>
+      <td style="font-size:13px">${isVacant ? '<span style="color:var(--text-muted);font-style:italic">—</span>' : (item.Fullname || '—')}</td>
+      <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : emailCell}</td>
+      <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : phoneCell}</td>
       <td class="date-cell">${item.Start || '—'}</td>
       <td class="date-cell">${item.End || '—'}</td>
       <td class="rent-cell">${rent}</td>
