@@ -248,24 +248,38 @@
   .date-cell { font-size: 14px; color: var(--text-muted); white-space: nowrap; }
   .model-cell { font-size: 15px; }
 
+  /* ── EX ROW (เครื่องบริษัท) ── */
+  tr.row-ex {
+    background: #fff0f0;
+  }
+  [data-theme="dark"] tr.row-ex {
+    background: #2d0f0f;
+  }
+  tr.row-ex:hover {
+    background: #ffd6d6;
+  }
+  [data-theme="dark"] tr.row-ex:hover {
+    background: #3d1515;
+  }
+
   /* ── VACANT ROW (ว่าง) ── */
   tr.row-vacant {
-    background: linear-gradient(90deg, #ffebeb 0%, #fee8e8 100%);
+    background: linear-gradient(90deg, #fffbeb 0%, #fefce8 100%);
   }
   [data-theme="dark"] tr.row-vacant {
-    background: linear-gradient(90deg, #2d0000 0%, #1e0000 100%);
+    background: linear-gradient(90deg, #2d2200 0%, #1e1700 100%);
   }
   tr.row-vacant:hover {
-    background: linear-gradient(90deg, #fec7c7 0%, #fd8a8a33 100%);
+    background: linear-gradient(90deg, #fef3c7 0%, #fde68a33 100%);
   }
   .badge-vacant {
     display: inline-flex; align-items: center; gap: 5px;
-    background: #fec3c3; color: #850e0e; border: 1.5px dashed #ca0404;
+    background: #fef9c3; color: #854d0e; border: 1.5px dashed #ca8a04;
     padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 700;
     white-space: nowrap; letter-spacing: 0.3px;
   }
   [data-theme="dark"] .badge-vacant {
-    background: #3d0000; color: #fd8a8a; border-color: #ff0000;
+    background: #3d2e00; color: #fde68a; border-color: #ca8a04;
   }
 
   /* Empty state */
@@ -463,16 +477,17 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="tabs-bar">
+  <button class="tab-btn" data-tab="sfr">🍽️ SFR</button>
   <button class="tab-btn active" data-tab="bkk">🏙️ SFL BKK</button>
   <button class="tab-btn" data-tab="pty">🌊 SFL PTY</button>
-  <button class="tab-btn" data-tab="pmcg">📁 PMCG</button>
-  <button class="tab-btn" data-tab="sfc">🏢 SFC</button>
-  <button class="tab-btn" data-tab="sfr">🍽️ SFR</button>
-  <button class="tab-btn" data-tab="sct">🥣 SCT</button>
-  <button class="tab-btn" data-tab="sff">🥩 SFF</button>
-  <button class="tab-btn" data-tab="osh">🍱 OSH</button>
+  <button class="tab-btn" data-tab="pmcg">🏢 PMCG</button>
   <button class="tab-btn" data-tab="bak">☕ BAK</button>
   <button class="tab-btn" data-tab="duo">🫓 DUO</button>
+  <button class="tab-btn" data-tab="osh">🍱 OSH</button>
+  <button class="tab-btn" data-tab="sct">🥢 SCT</button>
+  <button class="tab-btn" data-tab="sfc">⚙️ SFC</button>
+  <button class="tab-btn" data-tab="sff">🥩 SFF</button>
+
 </div>
 
 <div class="mobile-nav" id="mobile-nav"></div>
@@ -778,7 +793,8 @@ function renderRows(tabKey, sec, filter = '') {
     const nicknameCell = isVacant
       ? `<span class="badge-vacant">💻 ว่าง</span>`
       : `${item.Nickname || '—'}`;
-    return `<tr${isVacant ? ' class="row-vacant"' : ''}>
+    const rowClass = isVacant ? 'row-vacant' : (item.status === 'EX' ? 'row-ex' : '');
+    return `<tr${rowClass ? ` class="${rowClass}"` : ''}>
       <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
       <td class="nowrap">${badge}</td>
       <td>${modelCell}</td>
