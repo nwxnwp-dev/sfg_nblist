@@ -87,16 +87,20 @@
     padding: 0 24px;
     transition: background 0.3s, border-color 0.3s;
   }
-  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto; overflow: hidden; }
+  .header-left > div:last-child { min-width: 0; overflow: hidden; }
   .logo-icon {
     width: 36px; height: 36px; border-radius: 10px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; color: #fff; font-weight: 700; flex-shrink: 0;
   }
-  .header-title { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.2; }
-  .header-subtitle { font-size: 13px; color: var(--text-muted); }
-  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-title {
+    font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .header-subtitle { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
   /* Theme toggle */
   .theme-btn {
@@ -117,7 +121,7 @@
   /* Search */
   .search-wrap { position: relative; }
   .search-input {
-    padding: 7px 14px 7px 36px; border-radius: 20px;
+    padding: 7px 34px 7px 36px; border-radius: 20px;
     border: 1.5px solid var(--border); background: var(--surface2);
     color: var(--text); font-family: inherit; font-size: 16px; width: 200px;
     outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
@@ -127,6 +131,53 @@
     position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
     color: var(--text-muted); font-size: 15px; pointer-events: none;
   }
+  .search-clear {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; border-radius: 50%; border: none;
+    background: var(--border); color: var(--text-muted); cursor: pointer;
+    font-size: 12px; line-height: 1; align-items: center; justify-content: center;
+    display: none; transition: background 0.15s, color 0.15s;
+  }
+  .search-clear:hover { background: var(--accent); color: #fff; }
+
+  /* ── TABS BAR disabled state (while searching) ── */
+  .tabs-bar.disabled, .mobile-nav.disabled { opacity: 0.4; pointer-events: none; }
+
+  /* ── GLOBAL SEARCH RESULTS ── */
+  .global-search { padding: 24px; }
+  .search-summary {
+    font-size: 16px; color: var(--text-muted); margin-bottom: 18px;
+    padding: 12px 16px; background: var(--accent-light); border-radius: var(--radius);
+    color: var(--accent); font-weight: 600;
+  }
+  .search-summary b { font-size: 18px; }
+  .search-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 16px; }
+  .search-group {
+    margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .search-group-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--surface2); cursor: pointer;
+    font-size: 17px; font-weight: 700; color: var(--text);
+    transition: background 0.15s;
+  }
+  .search-group-header:hover { background: var(--accent-light); color: var(--accent); }
+  .search-group-count {
+    font-size: 12px; font-weight: 700; color: var(--accent);
+    background: var(--accent-light); padding: 3px 10px; border-radius: 20px;
+  }
+  .search-section { padding: 14px 18px 4px; }
+  .search-section-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .search-section .table-wrap { margin-bottom: 18px; }
+  mark.hl {
+    background: #fde047; color: #1a2332; padding: 0 2px; border-radius: 3px; font-weight: 700;
+  }
+  [data-theme="dark"] mark.hl { background: #ca8a04; color: #fff; }
 
   /* ── TABS ── */
   .tabs-bar {
@@ -197,6 +248,18 @@
   /* ── SECTION ── */
   .section-header {
     display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .local-search-wrap { position: relative; margin-left: auto; }
+  .local-search-input {
+    padding: 6px 12px 6px 30px; border-radius: 20px;
+    border: 1.5px solid var(--border); background: var(--surface2);
+    color: var(--text); font-family: inherit; font-size: 14px; width: 180px;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .local-search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .local-search-wrap::before {
+    content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; pointer-events: none;
   }
   .section-title {
     font-size: 24px; font-weight: 700; color: var(--text);
@@ -382,9 +445,14 @@
 
   @media (max-width: 540px) {
     /* Header */
-    header { padding: 0 12px; }
+    header { padding: 0 12px; gap: 8px; }
+    .header-left { gap: 8px; }
+    .logo-icon { width: 30px; height: 30px; font-size: 15px; border-radius: 8px; }
+    .header-title { font-size: 15px; }
     .header-subtitle { display: none; }
-    .search-input { width: 100px; font-size: 13px; }
+    .search-input { width: 120px; font-size: 13px; }
+    .local-search-wrap { margin-left: 0; width: 100%; }
+    .local-search-input { width: 100%; }
     .menu-btn { display: flex; }
 
     /* Tabs bar — scrollable pills */
@@ -439,8 +507,9 @@
   }
 
   @media (max-width: 380px) {
-    .header-title { font-size: 14px; }
-    .search-input { width: 80px; font-size: 12px; }
+    .header-title { font-size: 13px; }
+    .logo-icon { width: 26px; height: 26px; font-size: 13px; }
+    .search-input { width: 90px; font-size: 12px; }
     .stat-value { font-size: 19px; }
   }
 </style>
@@ -467,7 +536,8 @@
   <div class="header-right">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
-      <input class="search-input" type="text" id="searchInput" placeholder="ค้นหา...">
+      <input class="search-input" type="text" id="searchInput" placeholder="ค้นหาทุกสาขา..." autocomplete="off">
+      <button class="search-clear" id="searchClear" title="ล้างคำค้นหา (Esc)">✕</button>
     </div>
     <span class="theme-label" id="themeLabel">☀️</span>
     <button class="theme-btn" id="themeToggle" title="สลับโหมด"></button>
@@ -547,6 +617,8 @@
     <div class="tab-panel" id="panel-duo"></div>
   </div>
 </div>
+
+<div class="global-search" id="globalSearchPanel" style="display:none"></div>
 
 <script>
 // ── EXCEL DATE HELPER ──
@@ -677,6 +749,19 @@ function calcStats(sections) {
 
 function fmt(n) { return n.toLocaleString('th-TH'); }
 
+// ── HIGHLIGHT MATCHED TEXT ──
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function highlightMatch(text, q) {
+  const str = escapeHtml(text);
+  if (!q) return str;
+  const lower = str.toLowerCase();
+  const idx = lower.indexOf(q.toLowerCase());
+  if (idx === -1) return str;
+  return str.slice(0, idx) + '<mark class="hl">' + str.slice(idx, idx + q.length) + '</mark>' + str.slice(idx + q.length);
+}
+
 // ── BUILD SIDEBAR ──
 function buildSidebar(tabKey, sections) {
   const sb = document.getElementById(`sidebar-${tabKey}`);
@@ -743,6 +828,9 @@ function buildPanel(tabKey, sections) {
         <div class="section-title">📍 ${sec.name}</div>
         <div class="section-badge">${sec.items.length} เครื่อง</div>
         ${rentBadge}
+        <div class="local-search-wrap">
+          <input class="local-search-input" type="text" placeholder="ค้นหาในหน้านี้..." data-tab="${tabKey}" data-sec="${sec.name}">
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -770,45 +858,158 @@ function buildPanel(tabKey, sections) {
   sections.forEach(sec => {
     renderRows(tabKey, sec);
   });
+
+  panel.querySelectorAll('.local-search-input').forEach(inp => {
+    let debounce;
+    inp.addEventListener('input', function() {
+      clearTimeout(debounce);
+      const val = this.value;
+      debounce = setTimeout(() => {
+        const sec = sections.find(s => s.name === this.dataset.sec);
+        if (sec) renderRows(tabKey, sec, val);
+      }, 120);
+    });
+  });
 }
 
-// ── RENDER ROWS ──
-function renderRows(tabKey, sec, filter = '') {
+// ── BUILD ONE ROW (shared by normal view + global search results) ──
+function buildRowHtml(item, idx, q = '') {
+  const isVacant = (item.Nickname || '').toString().trim() === 'ว่าง';
+  const badge = item.status === 'IN'
+    ? `<span class="badge badge-in">IN</span>`
+    : `<span class="badge badge-ex">EX</span>`;
+  const rent = item.Rent ? `${parseFloat(item.Rent).toLocaleString('th-TH')} ` : `<span style="color:var(--text-muted)">—</span>`;
+  const serial = item.Serial && item.Serial !== '—' ? `<span class="serial-code">${highlightMatch(item.Serial, q)}</span>` : '';
+  const modelCell = `<div class="model-cell">${highlightMatch(item.Model || '—', q)}</div>${serial ? `<div style="margin-top:4px">${serial}</div>` : ''}`;
+  const emailCell = item.Email ? `<a href="mailto:${item.Email}" style="color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap">${highlightMatch(item.Email, q)}</a>` : `<span style="color:var(--text-muted)">—</span>`;
+  const phoneCell = item.Phone ? `<a href="tel:${item.Phone}" style="color:var(--accent2);font-size:13px;text-decoration:none;white-space:nowrap">📞 ${highlightMatch(item.Phone, q)}</a>` : `<span style="color:var(--text-muted)">—</span>`;
+  const nicknameCell = isVacant
+    ? `<span class="badge-vacant">💻 ว่าง</span>`
+    : highlightMatch(item.Nickname || '—', q);
+  const rowClass = isVacant ? 'row-vacant' : (item.status === 'EX' ? 'row-ex' : '');
+  return `<tr${rowClass ? ` class="${rowClass}"` : ''}>
+    <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
+    <td class="nowrap">${badge}</td>
+    <td>${modelCell}</td>
+    <td class="pos-cell">${highlightMatch(item.Position || '—', q)}</td>
+    <td class="name-cell nowrap">${nicknameCell}</td>
+    <td style="font-size:13px">${isVacant ? '<span style="color:var(--text-muted);font-style:italic">—</span>' : highlightMatch(item.Fullname || '—', q)}</td>
+    <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : emailCell}</td>
+    <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : phoneCell}</td>
+    <td class="date-cell">${item.Start || '—'}</td>
+    <td class="date-cell">${item.End || '—'}</td>
+    <td class="rent-cell">${rent}</td>
+  </tr>`;
+}
+
+// ── RENDER ROWS (per-section view, optional local filter box) ──
+function renderRows(tabKey, sec, localFilter = '') {
   const tbody = document.getElementById(`tbody-${tabKey}-${sec.name}`);
   if (!tbody) return;
-  const q = filter.toLowerCase();
+  const q = localFilter.trim().toLowerCase();
   let idx = 0;
   const rows = sec.items.map(item => {
     if (q && !Object.values(item).join(' ').toLowerCase().includes(q)) return '';
     idx++;
-    const isVacant = (item.Nickname || '').toString().trim() === 'ว่าง';
-    const badge = item.status === 'IN'
-      ? `<span class="badge badge-in">IN</span>`
-      : `<span class="badge badge-ex">EX</span>`;
-    const rent = item.Rent ? `${parseFloat(item.Rent).toLocaleString('th-TH')} ` : `<span style="color:var(--text-muted)">—</span>`;
-    const serial = item.Serial && item.Serial !== '—' ? `<span class="serial-code">${item.Serial}</span>` : '';
-    const modelCell = `<div class="model-cell">${item.Model || '—'}</div>${serial ? `<div style="margin-top:4px">${serial}</div>` : ''}`;
-    const emailCell = item.Email ? `<a href="mailto:${item.Email}" style="color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap">${item.Email}</a>` : `<span style="color:var(--text-muted)">—</span>`;
-    const phoneCell = item.Phone ? `<a href="tel:${item.Phone}" style="color:var(--accent2);font-size:13px;text-decoration:none;white-space:nowrap">📞 ${item.Phone}</a>` : `<span style="color:var(--text-muted)">—</span>`;
-    const nicknameCell = isVacant
-      ? `<span class="badge-vacant">💻 ว่าง</span>`
-      : `${item.Nickname || '—'}`;
-    const rowClass = isVacant ? 'row-vacant' : (item.status === 'EX' ? 'row-ex' : '');
-    return `<tr${rowClass ? ` class="${rowClass}"` : ''}>
-      <td class="nowrap" style="color:var(--text-muted);font-size:12px">${idx}</td>
-      <td class="nowrap">${badge}</td>
-      <td>${modelCell}</td>
-      <td class="pos-cell">${item.Position || '—'}</td>
-      <td class="name-cell nowrap">${nicknameCell}</td>
-      <td style="font-size:13px">${isVacant ? '<span style="color:var(--text-muted);font-style:italic">—</span>' : (item.Fullname || '—')}</td>
-      <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : emailCell}</td>
-      <td>${isVacant ? '<span style="color:var(--text-muted)">—</span>' : phoneCell}</td>
-      <td class="date-cell">${item.Start || '—'}</td>
-      <td class="date-cell">${item.End || '—'}</td>
-      <td class="rent-cell">${rent}</td>
-    </tr>`;
+    return buildRowHtml(item, idx, q);
   }).join('');
-  tbody.innerHTML = rows || `<tr><td colspan="11" class="empty">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+  tbody.innerHTML = rows || `<tr><td colspan="11" class="empty">ไม่พบข้อมูลที่ค้นหาในหน้านี้</td></tr>`;
+}
+
+// ── GLOBAL SEARCH (ค้นหาทุกสาขา ทุกแท็บ) ──
+function performGlobalSearch(query) {
+  const q = query.trim().toLowerCase();
+  const results = [];
+  if (!q) return results;
+  Object.entries(tabMap).forEach(([key, sheetName]) => {
+    const sections = DATA[sheetName] || [];
+    const matchedSections = [];
+    sections.forEach(sec => {
+      const items = sec.items.filter(item => Object.values(item).join(' ').toLowerCase().includes(q));
+      if (items.length) matchedSections.push({ name: sec.name, items });
+    });
+    if (matchedSections.length) results.push({ key, sections: matchedSections });
+  });
+  return results;
+}
+
+function renderGlobalSearch(query) {
+  const panel = document.getElementById('globalSearchPanel');
+  const q = query.trim();
+  const results = performGlobalSearch(q);
+
+  if (results.length === 0) {
+    panel.innerHTML = `<div class="search-empty">😕 ไม่พบข้อมูลที่ค้นหา "${escapeHtml(q)}"<br><span style="font-size:14px">ลองค้นหาด้วย ชื่อเล่น, ชื่อจริง, รุ่นเครื่อง, Serial, แผนก หรือเบอร์โทร</span></div>`;
+    return;
+  }
+
+  const totalItems = results.reduce((s, t) => s + t.sections.reduce((s2, sec) => s2 + sec.items.length, 0), 0);
+  const summary = `<div class="search-summary">🔎 พบ <b>${totalItems}</b> รายการ ใน <b>${results.length}</b> สาขา สำหรับ "${escapeHtml(q)}" — คลิกชื่อสาขาเพื่อไปดูที่แท็บนั้น</div>`;
+
+  const groupsHtml = results.map(group => {
+    const tabName = tabMap[group.key];
+    const icon = tabIcons[group.key];
+    const groupTotal = group.sections.reduce((s, sec) => s + sec.items.length, 0);
+    const sectionsHtml = group.sections.map(sec => {
+      const rows = sec.items.map((item, i) => buildRowHtml(item, i + 1, q)).join('');
+      return `<div class="search-section">
+        <div class="search-section-title">📍 ${sec.name} <span class="section-badge">${sec.items.length} เครื่อง</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>#</th><th>สถานะ</th><th>รุ่น / หมายเลขเครื่อง</th><th>แผนก / ตำแหน่ง</th><th>ชื่อเล่น</th>
+              <th>ชื่อ - นามสกุล</th><th>อีเมล</th><th>เบอร์โทร</th><th>วันเริ่ม</th><th>วันสิ้นสุด</th><th>ค่าเช่า (บาท)</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="search-group">
+      <div class="search-group-header" data-tab="${group.key}">
+        <span>${icon} ${tabName}</span>
+        <span class="search-group-count">${groupTotal} รายการ</span>
+      </div>
+      ${sectionsHtml}
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = summary + groupsHtml;
+
+  panel.querySelectorAll('.search-group-header').forEach(h => {
+    h.onclick = () => {
+      const key = h.dataset.tab;
+      clearSearch();
+      switchTab(key);
+    };
+  });
+}
+
+// ── SEARCH VIEW TOGGLE ──
+function updateSearchView() {
+  const layout = document.querySelector('.layout');
+  const mobileNav = document.getElementById('mobile-nav');
+  const tabsBar = document.querySelector('.tabs-bar');
+  const globalPanel = document.getElementById('globalSearchPanel');
+  const clearBtn = document.getElementById('searchClear');
+  const active = !!searchQuery.trim();
+
+  clearBtn.style.display = active ? 'flex' : 'none';
+  layout.style.display = active ? 'none' : 'flex';
+  globalPanel.style.display = active ? 'block' : 'none';
+  if (mobileNav) mobileNav.classList.toggle('disabled', active);
+  if (tabsBar) tabsBar.classList.toggle('disabled', active);
+
+  if (active) {
+    renderGlobalSearch(searchQuery);
+  }
+}
+
+function clearSearch() {
+  searchQuery = '';
+  const input = document.getElementById('searchInput');
+  if (input) input.value = '';
+  updateSearchView();
 }
 
 // ── SHOW SECTION ──
@@ -887,19 +1088,22 @@ function initApp() {
     themeLabel.textContent = isDark ? '☀️' : '🌙';
   };
 
-  // Search
-  document.getElementById('searchInput').addEventListener('input', function() {
-    searchQuery = this.value;
-    const sections = DATA[tabMap[currentTab]] || [];
-    sections.forEach(sec => renderRows(currentTab, sec, searchQuery));
-    if (searchQuery) {
-      document.querySelectorAll(`#panel-${currentTab} .section-panel`).forEach(p => p.classList.add('active'));
-    } else {
-      document.querySelectorAll(`#panel-${currentTab} .section-panel`).forEach(p => {
-        p.classList.toggle('active', p.id === `${currentTab}-${currentSection[currentTab]}`);
-      });
-    }
+  // Search (ค้นหาทุกแท็บ ทุกสาขาพร้อมกัน)
+  const searchInput = document.getElementById('searchInput');
+  const searchClearBtn = document.getElementById('searchClear');
+  let searchDebounce;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchDebounce);
+    const val = this.value;
+    searchDebounce = setTimeout(() => {
+      searchQuery = val;
+      updateSearchView();
+    }, 150);
   });
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') clearSearch();
+  });
+  searchClearBtn.onclick = () => { clearSearch(); searchInput.focus(); };
 
   // Show first section
   switchTab('bkk');
